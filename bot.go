@@ -282,11 +282,7 @@ func (b *Bot) GetUpdatesChannel(ctx context.Context) <-chan Event {
 // All communications with bot API must go through Bot struct.
 // In general you don't need to configure this bot, therefore all options are optional arguments.
 func NewBot(token string, opts ...BotOption) (*Bot, error) {
-	logger := logrus.New()
-	logger.SetFormatter(&logrus.TextFormatter{
-		FullTimestamp:   true,
-		TimestampFormat: "2006-01-02 15:04:05",
-	})
+	var logger *logrus.Logger
 
 	apiURL := defaultAPIURL
 	debug := defaultDebug
@@ -299,11 +295,21 @@ func NewBot(token string, opts ...BotOption) (*Bot, error) {
 			debug = option.Value().(bool)
 		case "http_client":
 			client = option.Value().(http.Client)
+		case "logger":
+			logger = option.Value().(*logrus.Logger)
 		}
 	}
 
-	if debug {
-		logger.SetLevel(logrus.DebugLevel)
+	if logger == nil {
+		logger := logrus.New()
+		logger.SetFormatter(&logrus.TextFormatter{
+			FullTimestamp:   true,
+			TimestampFormat: "2006-01-02 15:04:05",
+		})
+
+		if debug {
+			logger.SetLevel(logrus.DebugLevel)
+		}
 	}
 
 	tgClient := NewCustomClient(&client, apiURL, token, logger)

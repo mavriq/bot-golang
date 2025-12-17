@@ -64,7 +64,7 @@ func (c *Client) DoWithContext(ctx context.Context, path string, params url.Valu
 	}
 
 	c.logger.WithFields(logrus.Fields{
-		"api_url": apiURL,
+		"api_url": loggingHideUrlToken(apiURL),
 	}).Debug("requesting api")
 
 	resp, err := c.client.Do(req)
@@ -93,7 +93,7 @@ func (c *Client) DoWithContext(ctx context.Context, path string, params url.Valu
 
 	if c.logger.IsLevelEnabled(logrus.DebugLevel) {
 		c.logger.WithFields(logrus.Fields{
-			"response": responseBody,
+			"response": string(responseBody),
 		}).Debug("got response from API")
 	}
 

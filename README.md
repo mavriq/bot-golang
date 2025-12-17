@@ -43,6 +43,37 @@ func main() {
 }
 ```
 
+### Create your bot with predefined logger
+
+```go
+
+package main
+
+import (
+	botgolang "github.com/mail-ru-im/bot-golang"
+	"github.com/sirupsen/logrus"
+)
+
+var BOT_TOKEN string
+
+func main() {
+	logger := logrus.New()
+	// configuring logrus
+	// ...
+
+	bot, err := NewBot(BOT_TOKEN, botgolang.BotLogger(logger))
+
+	if err != nil {
+		logger.WithFields(logrus.Fields{
+			"error": err,
+		}).Panic("wrong token")
+	}
+
+	// ...
+}
+```
+
+
 ### Send and edit messages
 
 You can create, edit and reply to messages like a piece of cake.

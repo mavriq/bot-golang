@@ -1,6 +1,10 @@
 package botgolang
 
-import "net/http"
+import (
+	"net/http"
+
+	"github.com/sirupsen/logrus"
+)
 
 type BotOption interface {
 	Type() string
@@ -35,4 +39,20 @@ func (o BotHTTPClient) Type() string {
 
 func (o BotHTTPClient) Value() interface{} {
 	return http.Client(o)
+}
+
+type botLogger struct {
+	*logrus.Logger
+}
+
+func BotLogger(l *logrus.Logger) botLogger {
+	return botLogger{l}
+}
+
+func (o botLogger) Type() string {
+	return "logger"
+}
+
+func (o botLogger) Value() interface{} {
+	return (*logrus.Logger)(o.Logger)
 }
